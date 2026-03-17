@@ -1,0 +1,21 @@
+# Build and artifacts
+.gradle/
+build/
+bin/
+out/
+
+# IDE files
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# Environment and sensitive info
+firebase-service-account.json
+application.properties
+.env
+*.pem
+*.jks
+
+# Logs
+*.log

@@ -1,0 +1,32 @@
+# ===== Server =====
+server.port=8080
+
+# ===== MongoDB =====
+# Replace with your local or Atlas URI
+# spring.data.mongodb.uri=mongodb+srv://<USERNAME>:<PASSWORD>@<CLUSTER>/<DB>?retryWrites=true&w=majority
+spring.data.mongodb.uri=mongodb://localhost:27017/splitease
+
+# ===== JWT =====
+# Change this to a strong secret key for production use
+jwt.secret=CHANGE_ME_TO_A_STRONG_SECRET_KEY_AT_LEAST_256_BITS_LONG_FOR_HS256
+jwt.expiration-ms=86400000
+
+# ===== Firebase =====
+# Ensure the firebase-service-account.json is in the BE root directory
+firebase.service-account-path=firebase-service-account.json
+
+# ===== OpenAPI / Swagger =====
+springdoc.api-docs.path=/api-docs
+springdoc.swagger-ui.path=/swagger-ui.html
+
+# ===== Logging =====
+logging.level.com.splitease=DEBUG
+
+# ===== Cloudinary =====
+# Format: cloudinary://API_KEY:API_SECRET@CLOUD_NAME
+# cloudinary.url=cloudinary://<API_KEY>:<API_SECRET>@<CLOUD_NAME>
+
+# ===== Gemini AI =====
+# Get your API key from official sources
+gemini.api.key=YOUR_API_KEY_HERE
+gemini.api.model=gemini-2.0-flash
