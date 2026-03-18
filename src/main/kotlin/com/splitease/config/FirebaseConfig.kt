@@ -21,27 +21,43 @@ class FirebaseConfig(
     fun firebaseApp(): FirebaseApp? {
         return try {
             if (FirebaseApp.getApps().isNotEmpty()) {
-                return FirebaseApp.getInstance()
+                val app = FirebaseApp.getInstance()
+                logger.debug("Using existing Firebase app instance: {}", app.name)
+                return app
             }
 
+            // Prioritize JSON content from environment variable
             val credentials = if (serviceAccountJson.isNotBlank()) {
-                logger.info("Initializing Firebase using service account JSON from environment variable")
-                GoogleCredentials.fromStream(serviceAccountJson.byteInputStream())
+                logger.info("Initializing Firebase using FIREBASE_SERVICE_ACCOUNT_JSON content")
+                try {
+                    GoogleCredentials.fromStream(serviceAccountJson.byteInputStream())
+                } catch (e: Exception) {
+                    logger.error("Failed to parse Firebase JSON from environment variable: {}", e.message)
+                    throw e
+                }
             } else {
-                logger.info("Initializing Firebase using service account file at: {}", serviceAccountPath)
-                val serviceAccount = FileInputStream(serviceAccountPath)
-                GoogleCredentials.fromStream(serviceAccount)
+                logger.info("FIREBASE_SERVICE_ACCOUNT_JSON is empty, falling back to file: {}", serviceAccountPath)
+                val serviceAccountFile = java.io.File(serviceAccountPath)
+                if (!serviceAccountFile.exists()) {
+                    logger.error("Firebase initialization failed: Neither FIREBASE_SERVICE_ACCOUNT_JSON env var nor file at {} exists", serviceAccountPath)
+                    return null
+                }
+                FileInputStream(serviceAccountFile).use { 
+                    GoogleCredentials.fromStream(it)
+                }
             }
 
             val options = FirebaseOptions.builder()
                 .setCredentials(credentials)
                 .build()
 
+            logger.info("Firebase Application initialized successfully.")
             FirebaseApp.initializeApp(options)
         } catch (e: Exception) {
-            logger.error("Failed to initialize Firebase: {}", e.message)
+            logger.error("CRITICAL: Failed to initialize Firebase App: ", e)
             null
         }
     }
+
 }
 
