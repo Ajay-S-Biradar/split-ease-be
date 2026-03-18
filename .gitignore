@@ -12,7 +12,6 @@ out/
 
 # Environment and sensitive info
 firebase-service-account.json
-application.properties
 .env
 *.pem
 *.jks
